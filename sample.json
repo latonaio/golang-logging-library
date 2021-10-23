@@ -1,0 +1,7 @@
+{
+    "log": {"level": [Error]
+      "file": "/Users/kyotatashiro/go/src/loggertest/main.go:L9"
+      "message": "test"
+    },
+    "time":"2021/10/23 15:23:24.02"
+  }
