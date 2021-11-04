@@ -1,7 +1,7 @@
 {
-    "log": {"level": [Error]
-      "file": "/Users/kyotatashiro/go/src/loggertest/main.go:L9"
-      "message": "test"
-    },
-    "time":"2021/10/23 15:23:24.02"
-  }
+  "message":"test",
+  "level":"DEBUG",
+  "cursor":"/Users/hosaka_shinnosuke/dev/golang-logging-library/test/test.go#L11",
+  "time":"2021-11-02T18:12:54.356188+09:00",
+  "tag":null
+}
