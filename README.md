@@ -8,8 +8,6 @@ golang-logging-library は Go ランタイム の マイクロサービス の �
 
 ・OS: Linux OS  
 ・CPU: ARM/AMD/Intel  
-・Kubernetes  
-・AION のリソース
 
 ## 利用方法
 
