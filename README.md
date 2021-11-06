@@ -33,24 +33,50 @@ l := logger.NewLogger()
 
 出力の形式
 
-- log.Fatal(msg, tag) 
-- log.Error(msg, tag)
-- log.Info (msg, tag)
-- log.Debug(msg, tag)
+- log.Fatal(msg) 
+- log.Error(msg)
+- log.Warn (msg)
+- log.Info (msg)
+- log.Debug(msg)
  
 パラメーター
 
-- msg: 文字列型、出力したい内容を指定する
-- tag: Interface型、文字列を渡した場合のみ、出力タグをつけることが出来ます。指定しない場合はnilを渡すことを推奨します。
+- msg: interface型、文字列で渡した場合とJSONにマッピングできるmapや構造体の形式で渡した場合で挙動が異なります。
 
 ログ出力例は以下の通りです。
 
 ```go
-// tagを付けない場合
-log.Debug("test", nil)
-{"message":"test","level":"DEBUG","cursor":"/xxxxxx/.go#L11","time":"2021-11-02T19:39:19.404655+09:00","tag":null}
+// 引数に文字列を渡した場合
+logging.Debug("This is Test")
+{"cursor":"/Users/xxx/test/test.go#L35","level":"DEBUG","message":"This is Test","time":"2021-11-05T18:33:49.495918+09:00"}
 
-// tagをつける場合
-log.Debug("test", "add tags")
-{"message":"test","level":"DEBUG","cursor":"/xxxxxx/.go#L11","time":"2021-11-02T19:39:19.404655+09:00","tag":add tags}
+// 引数を文字列に渡した場合、フォーマット指定することも可能です
+var A = "test"
+var B = 111
+logging.Debug("%v %v", A, B)
+{"cursor":"/Users/xxx/test/test.go#L36","level":"DEBUG","message":"test 111","time":"2021-11-05T18:33:49.496388+09:00"}
+
+// JSONにマッピング可能なマップを渡した場合
+var testJson1 = map[string]interface{}{
+    "message": "debug",
+    "params": []string{
+        "nested", "world",
+    },
+}
+logging.Debug(testJson1)
+{"cursor":"/Users/xxx/test/test.go#L39","level":"DEBUG","message":"debug","params":["nested","world"],"time":"2021-11-05T18:33:49.496445+09:00"}
+
+// JSONにマッピング可能な構造体を渡した場合
+type testStruct struct {
+	This string `json:"message"`
+	Is   string `json:"is"`
+	Test int    `json:"test"`
+}
+
+var testJson2 = testStruct{
+    "hello", "world", 100,
+}
+logging.Debug(testJson2)
+{"cursor":"/Users/xxx/test/test.go#L40","is":"world","level":"DEBUG","message":"hello","test":100,"time":"2021-11-05T18:33:49.496519+09:00"}
+
 ```

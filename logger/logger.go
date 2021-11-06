@@ -4,96 +4,83 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"runtime"
-	"strconv"
 	"time"
 )
 
 type Logger struct {
-	Message interface{} `json:"message"`
-	Level   string      `json:"level"`
-	Cursor  string      `json:"cursor"`
-	Time    interface{} `json:"time"`
-	Tag     interface{} `json:"tag"`
+	Log map[string]interface{}
 }
 
-//
 func NewLogger() *Logger {
 
 	return &Logger{
-		Message: "default",
-		Level:   "default",
-		Cursor:  "default",
-		Time:    "default",
-		Tag:     nil,
+		Log: map[string]interface{}{},
 	}
 }
 
-// 第二引数はオプション, 必要ない場合はnilに設定してください。
-func (l *Logger) Fatal(msg interface{}, option interface{}) {
-	l.log(msg, "FATAL", option)
+// 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
+func (*Logger) Fatal(msg interface{}, format ...interface{}) {
+	log(msg, "FATAL", format)
 	panic("Fatal error")
 }
 
-// 第二引数はオプション, 必要ない場合はnilに設定してください。
-func (l *Logger) Error(msg interface{}, option interface{}) {
-	l.log(msg, "ERROR", option)
+// 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
+func (*Logger) Error(msg interface{}, format ...interface{}) {
+	log(msg, "ERROR", format)
 }
 
-// 第二引数はオプション, 必要ない場合はnilに設定してください。
-func (l *Logger) Warn(msg interface{}, option interface{}) {
-	l.log(msg, "WARN", option)
+// 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
+func (*Logger) Warn(msg interface{}, format ...interface{}) {
+	log(msg, "WARN", format)
 }
 
-// 第二引数はオプション, 必要ない場合はnilに設定してください。
-func (l *Logger) Info(msg interface{}, option interface{}) {
-	l.log(msg, "INFO", option)
+// 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
+func (*Logger) Info(msg interface{}, format ...interface{}) {
+	log(msg, "INFO", format)
 }
 
-// 第二引数はオプション, 必要ない場合はnilに設定してください。
-func (l *Logger) Debug(msg interface{}, option interface{}) {
-	l.log(msg, "DEBUG", option)
+// 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
+func (*Logger) Debug(msg interface{}, format ...interface{}) {
+	log(msg, "DEBUG", format)
 }
 
-// ログ表示
-func (l *Logger) log(msg interface{}, logLevel string, option interface{}) {
-	_, isTag := option.(string)
-	if isTag {
-		l.Tag = option
+func log(msg interface{}, logLevel string, variableStr []interface{}) {
+	m := map[string]interface{}{}
+
+	_, isString := msg.(string)
+	if isString && len(variableStr) == 0 {
+		m["message"] = msg
+	} else if isString && len(variableStr) > 0 {
+
+		msg = fmt.Sprintf(msg.(string), variableStr...)
+
+		m["message"] = msg
+	} else if isJsonString(msg) {
+		// 渡されたデータを一度JSONに変換した後、マップに変換することで、構造体で定義されたJSONであってもマップとして扱う
+		processingJsonData, _ := json.Marshal(msg)
+		jsonObj := loadJson(processingJsonData)
+
+		for k, v := range jsonObj {
+			m[k] = v
+		}
 	} else {
-		l.Tag = nil
+		panic("this is not string or json")
 	}
 
-	l.Message = msg
-	l.Level = logLevel
-	l.Cursor = cursor()
-	l.Time = time.Now()
+	m["level"] = logLevel
+	m["time"] = time.Now()
+	m["cursor"] = createCursor()
 
 	switch logLevel {
 	case "FATAL":
-		fmt.Fprintln(os.Stderr, l.parse())
+		fmt.Fprintln(os.Stderr, jsonParse(m))
 	case "ERROR":
-		fmt.Fprintln(os.Stderr, l.parse())
+		fmt.Fprintln(os.Stderr, jsonParse(m))
 	case "WARN":
-		fmt.Fprintln(os.Stderr, l.parse())
+		fmt.Fprintln(os.Stderr, jsonParse(m))
 	case "INFO":
-		fmt.Fprintln(os.Stdout, l.parse())
+		fmt.Fprintln(os.Stdout, jsonParse(m))
 	case "DEBUG":
-		fmt.Fprintln(os.Stdout, l.parse())
+		fmt.Fprintln(os.Stdout, jsonParse(m))
 	}
-}
-
-// 行番号の表示
-func cursor() string {
-	_, file, line, _ := runtime.Caller(3)
-	return file + "#L" + strconv.Itoa(line)
-}
-
-// jsonへパース
-func (l *Logger) parse() string {
-	result, err := json.Marshal(l)
-	if err != nil {
-		panic(err)
-	}
-	return string(result)
 }
