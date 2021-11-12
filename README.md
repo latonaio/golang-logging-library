@@ -1,35 +1,57 @@
 # golang-logging-library
 
-golang-logging-library は Go ランタイム の マイクロサービス の ログ を出力する際に、ログの json フォーマットを統一するための Go ライブラリです。
+golang-logging-library は Go ランタイム の マイクロサービス の ログ を出力する際に、ログの json フォーマットを統一するためのライブラリです。
 
 ## 動作環境
 
 動作には以下の環境であることを前提とします。
 
-・OS: Linux OS  
-・CPU: ARM/AMD/Intel  
+* OS: Linux OS    
+* CPU: ARM/AMD/Intel   
+* Golang Runtime
 
 ## 利用方法
 
-本リポジトリをインストールしてください。
+#### 本リポジトリを2通りの方法のいずれかでインストールしてください。
+
+【インストール方法①】  
+go getでインストールしてください。  
 
 ```sh
-go get -v github.com/latonaio/golang-logging-library/logger
+go get v0.0.0 github.com/latonaio/golang-logging-library/logger
 ```
 
-各マイクロサービスのソース内に以下を配置してください。
+【インストール方法②】  
+各マイクロサービスのgo.modに以下のように定義してから、go mod downloadでインストールしてください。  
+
+```
+module github.com/latonaio/golang-logging-library
+
+go 1.17
+
+require (
+	github.com/latonaio/golang-logging-library v0.0.0
+)
+```
+
+```
+go mod download   #全てインストールする場合
+go mod download github.com/latonaio/golang-logging-library v0.0.0   #一部のみインストールする場合
+```
+
+#### 各マイクロサービスのソース内に以下を配置してください。
 
 ```go
 import "github.com/latonaio/golang-logging-library/logger"
 ```
 
-インスタンスの作成は下記のように実行します。
+#### インスタンスの作成は下記のように実行します。
 
 ```go
 l := logger.NewLogger()
 ```
 
-出力の形式
+#### 出力の形式
 
 - log.Fatal(msg) 
 - log.Error(msg)
@@ -37,11 +59,11 @@ l := logger.NewLogger()
 - log.Info (msg)
 - log.Debug(msg)
  
-パラメーター
+#### パラメーター
 
 - msg: interface型、文字列で渡した場合とJSONにマッピングできるmapや構造体の形式で渡した場合で挙動が異なります。
 
-ログ出力例は以下の通りです。
+#### ログ出力例は以下の通りです。
 
 ```go
 // 引数に文字列を渡した場合
