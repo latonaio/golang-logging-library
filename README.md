@@ -25,7 +25,11 @@ go get github.com/latonaio/golang-logging-library/logger@v0.0.0
 各マイクロサービスのgo.modに以下のように定義してから、go mod downloadでインストールしてください。  
 
 ```
+<<<<<<< HEAD
 module MODULE-NAME
+=======
+module github.com/latonaio/golang-logging-library
+>>>>>>> e35d8cbb95d5836f5998ce1a5a24c459f8b4604c
 
 go 1.17
 
