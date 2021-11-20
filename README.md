@@ -15,7 +15,7 @@ golang-logging-library は Go ランタイム の マイクロサービス の �
 #### インストール
 
 ```sh
-go get github.com/latonaio/golang-logging-library/logger@develop
+go get github.com/latonaio/golang-logging-library/logger@v1.0.0-beta.1
 ```
 
 #### 各マイクロサービスのソース内に以下を配置してください。
