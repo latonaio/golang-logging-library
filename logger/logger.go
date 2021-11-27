@@ -70,6 +70,7 @@ func log(msg interface{}, logLevel string, variableStr []interface{}) {
 	m["level"] = logLevel
 	m["time"] = time.Now()
 	m["cursor"] = createCursor()
+	m["function"] = createFunctionName()
 
 	switch logLevel {
 	case "FATAL":

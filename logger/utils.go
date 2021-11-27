@@ -10,6 +10,10 @@ func createCursor() string {
 	_, file, line, _ := runtime.Caller(3)
 	return file + "#L" + strconv.Itoa(line)
 }
+func createFunctionName() string {
+	pt, _, _, _ := runtime.Caller(3)
+	return runtime.FuncForPC(pt).Name()
+}
 
 func isJsonString(s interface{}) bool {
 	_, err := json.Marshal(s)
