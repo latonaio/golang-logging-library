@@ -45,43 +45,41 @@ func (*Logger) Debug(msg interface{}, format ...interface{}) {
 }
 
 func log(msg interface{}, logLevel string, variableStr []interface{}) {
-	m := map[string]interface{}{}
-
-	_, isString := msg.(string)
-	if isString && len(variableStr) == 0 {
-		m["message"] = msg
-	} else if isString && len(variableStr) > 0 {
-
-		msg = fmt.Sprintf(msg.(string), variableStr...)
-
-		m["message"] = msg
-	} else if isJsonString(msg) {
-		// 渡されたデータを一度JSONに変換した後、マップに変換することで、構造体で定義されたJSONであってもマップとして扱う
-		processingJsonData, _ := json.Marshal(msg)
-		jsonObj := loadJson(processingJsonData)
-
-		for k, v := range jsonObj {
-			m[k] = v
-		}
-	} else {
-		panic("this is not string or json")
+	output := map[string]interface{}{
+		"level":    logLevel,
+		"time":     time.Now(),
+		"cursor":   createCursor(),
+		"function": createFunctionName(),
 	}
 
-	m["level"] = logLevel
-	m["time"] = time.Now()
-	m["cursor"] = createCursor()
-	m["function"] = createFunctionName()
+	// printf系の処理
+	typedMsg, ok := msg.(string)
+	if ok {
+		output["message"] = fmt.Sprintf(typedMsg, variableStr...)
+		fin(output)
+		return
+	}
 
-	switch logLevel {
-	case "FATAL":
-		fmt.Fprintln(os.Stderr, jsonParse(m))
-	case "ERROR":
-		fmt.Fprintln(os.Stderr, jsonParse(m))
-	case "WARN":
-		fmt.Fprintln(os.Stderr, jsonParse(m))
-	case "INFO":
-		fmt.Fprintln(os.Stdout, jsonParse(m))
-	case "DEBUG":
-		fmt.Fprintln(os.Stdout, jsonParse(m))
+	// jsonに変換できる場合の処理
+	if isJsonString(msg) {
+		processingJsonData, _ := json.Marshal(msg)
+		jsonObj := loadJson(processingJsonData)
+		for k, v := range jsonObj {
+			output[k] = v
+		}
+		fin(output)
+		return
+	}
+
+	// その他の場合
+	output["message"] = fmt.Sprintf("%+v", msg)
+	fin(output)
+}
+func fin(msg map[string]interface{}) {
+	switch msg["level"] {
+	case "FATAL", "ERROR", "WARN":
+		fmt.Fprintln(os.Stderr, jsonParse(msg))
+	case "INFO", "DEBUG":
+		fmt.Fprintln(os.Stdout, jsonParse(msg))
 	}
 }

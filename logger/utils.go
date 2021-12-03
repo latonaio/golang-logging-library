@@ -2,6 +2,7 @@ package logger
 
 import (
 	"encoding/json"
+	"reflect"
 	"runtime"
 	"strconv"
 )
@@ -15,10 +16,19 @@ func createFunctionName() string {
 	return runtime.FuncForPC(pt).Name()
 }
 
-func isJsonString(s interface{}) bool {
-	_, err := json.Marshal(s)
-
-	return err == nil
+func isJsonString(s interface{}) (b bool) {
+	defer func() {
+		if err := recover(); err != nil {
+			b = false
+		}
+	}()
+	val := reflect.ValueOf(s)
+	for i := 0; i < val.Type().NumField(); i++ {
+		if val.Type().Field(i).Tag.Get("json") != "" {
+			return true
+		}
+	}
+	return false
 }
 
 func loadJson(byteArray []byte) map[string]interface{} {
