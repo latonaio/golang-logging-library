@@ -16,19 +16,18 @@ func createFunctionName() string {
 	return runtime.FuncForPC(pt).Name()
 }
 
-func isJsonString(s interface{}) (b bool) {
+func isStructure(s interface{}) (b bool) {
 	defer func() {
 		if err := recover(); err != nil {
 			b = false
 		}
 	}()
 	val := reflect.ValueOf(s)
-	for i := 0; i < val.Type().NumField(); i++ {
-		if val.Type().Field(i).Tag.Get("json") != "" {
-			return true
-		}
+	if val.Type().Kind() == reflect.Struct {
+		return true
 	}
-	return false
+
+	return val.Type().Kind() == reflect.Slice
 }
 
 func loadJson(byteArray []byte) map[string]interface{} {

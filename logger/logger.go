@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"time"
@@ -61,12 +60,8 @@ func log(msg interface{}, logLevel string, variableStr []interface{}) {
 	}
 
 	// jsonに変換できる場合の処理
-	if isJsonString(msg) {
-		processingJsonData, _ := json.Marshal(msg)
-		jsonObj := loadJson(processingJsonData)
-		for k, v := range jsonObj {
-			output[k] = v
-		}
+	if isStructure(msg) {
+		output["message"] = msg
 		fin(output)
 		return
 	}
