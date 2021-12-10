@@ -50,25 +50,24 @@ func log(msg interface{}, logLevel string, variableStr []interface{}) {
 		"cursor":   createCursor(),
 		"function": createFunctionName(),
 	}
+	defer fin(output)
 
 	// printf系の処理
 	typedMsg, ok := msg.(string)
 	if ok {
 		output["message"] = fmt.Sprintf(typedMsg, variableStr...)
-		fin(output)
+		return
+	}
+
+	// errorの出力
+	_, ok = msg.(error)
+	if ok {
+		output["message"] = fmt.Sprintf("%+v", msg)
 		return
 	}
 
 	// jsonに変換できる場合の処理
-	if isStructure(msg) {
-		output["message"] = msg
-		fin(output)
-		return
-	}
-
-	// その他の場合
-	output["message"] = fmt.Sprintf("%+v", msg)
-	fin(output)
+	output["message"] = msg
 }
 func fin(msg map[string]interface{}) {
 	switch msg["level"] {

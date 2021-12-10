@@ -22,11 +22,15 @@ func isStructure(s interface{}) (b bool) {
 			b = false
 		}
 	}()
+
 	val := reflect.ValueOf(s)
+	for val.Type().Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+
 	if val.Type().Kind() == reflect.Struct {
 		return true
 	}
-
 	return val.Type().Kind() == reflect.Slice
 }
 

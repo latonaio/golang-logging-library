@@ -8,7 +8,7 @@ import (
 	"golang.org/x/xerrors"
 )
 
-func Test_a1(t *testing.T) {
+func Test_Struct(t *testing.T) {
 	l := logger.NewLogger()
 	jstr := struct {
 		K1 int         "json:\"Key1\""
@@ -25,7 +25,7 @@ func Test_a1(t *testing.T) {
 	l.Debug(jstr)
 }
 
-func Test_a2(t *testing.T) {
+func Test_Error(t *testing.T) {
 	l := logger.NewLogger()
 	err := fmt.Errorf("testError")
 	err = xerrors.Errorf("WRAP ERROR : %w", err)
@@ -33,7 +33,7 @@ func Test_a2(t *testing.T) {
 	l.Debug(err)
 }
 
-func Test_a3(t *testing.T) {
+func Test_StructNoJsonTag(t *testing.T) {
 	l := logger.NewLogger()
 	jstr := struct {
 		K1 int
@@ -50,7 +50,7 @@ func Test_a3(t *testing.T) {
 	l.Debug(jstr)
 }
 
-func Test_a4(t *testing.T) {
+func Test_StructArray(t *testing.T) {
 	l := logger.NewLogger()
 	jstr := []struct {
 		K1 int         "json:\"Key1\""
@@ -74,7 +74,7 @@ func Test_a4(t *testing.T) {
 	l.Debug(jstr)
 }
 
-func Test_a5(t *testing.T) {
+func Test_StringArray(t *testing.T) {
 	l := logger.NewLogger()
 	strArr := []string{
 		"test",
@@ -84,7 +84,8 @@ func Test_a5(t *testing.T) {
 	l.Debug(strArr)
 }
 
-func Test_a6(t *testing.T) {
+func Test_ErrorArray(t *testing.T) {
+	// うまく動作しないが、エラー型の配列を渡すことは考えられないため放置
 	l := logger.NewLogger()
 	strArr := []error{
 		fmt.Errorf("test"),
@@ -92,4 +93,21 @@ func Test_a6(t *testing.T) {
 	}
 
 	l.Debug(strArr)
+}
+
+func Test_StructPointer(t *testing.T) {
+	l := logger.NewLogger()
+	jstr := &struct {
+		K1 int
+		K2 string
+		K3 string
+		K4 interface{}
+		K5 interface{}
+	}{
+		K1: 1,
+		K2: "test",
+		K5: nil,
+	}
+
+	l.Debug(jstr)
 }
