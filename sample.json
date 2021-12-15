@@ -1,0 +1,22 @@
+[
+    {
+        "cursor":"/Users/xxx/test/test.go#L39",
+        "level":"DEBUG",
+        "message":"debug",
+        "params":["nested","world"],
+        "time":"2021-11-05T18:33:49.496445+09:00"},
+    {
+        "cursor":"/Users/xxx/test/test.go#L36",
+        "level":"DEBUG",
+        "message":"test 111",
+        "time":"2021-11-05T18:33:49.496388+09:00"},
+
+    {
+        "cursor":"/Users/xxx/test/test.go#L40",
+        "is":"world",
+        "level":"DEBUG",
+        "message":"hello",
+        "test":100,
+        "time":"2021-11-05T18:33:49.496519+09:00"
+    }
+]
