@@ -1,155 +1,79 @@
 package logger
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"time"
 )
 
-type Logger interface {
-	Fatal(Msg interface{}, args ...interface{})
-	Error(Msg interface{}, args ...interface{})
-	Warn(Msg interface{}, args ...interface{})
-	Info(Msg interface{}, args ...interface{})
-	Debug(Msg interface{}, args ...interface{})
-
-	AddOption(map[string]interface{}) Logger
+type Logger struct {
+	Log map[string]interface{}
 }
 
-func NewLogger() Logger {
-	return &logger{}
-}
+func NewLogger() *Logger {
 
-type logger struct{}
-
-func (l *logger) Fatal(Msg interface{}, args ...interface{}) {
-	newTempPrinter().Fatal(Msg, args...)
-}
-
-func (l *logger) Error(Msg interface{}, args ...interface{}) {
-	newTempPrinter().Error(Msg, args...)
-}
-
-func (l *logger) Warn(Msg interface{}, args ...interface{}) {
-	newTempPrinter().Warn(Msg, args...)
-}
-
-func (l *logger) Info(Msg interface{}, args ...interface{}) {
-	newTempPrinter().Info(Msg, args...)
-}
-
-func (l *logger) Debug(Msg interface{}, args ...interface{}) {
-	newTempPrinter().Debug(Msg, args...)
-}
-
-func (l *logger) AddOption(fields map[string]interface{}) Logger {
-	return &tempPrinter{
-		msg: fields,
+	return &Logger{
+		Log: map[string]interface{}{},
 	}
 }
 
-const (
-	MSG  = "message"
-	LVL  = "level"
-	TIME = "time"
-	CUR  = "cursor"
-	FUNC = "function"
-)
-
-type tempPrinter struct {
-	msg
-}
-type msg map[string]interface{}
-
-func newTempPrinter() *tempPrinter {
-	return &tempPrinter{
-		msg: make(msg, 0),
-	}
-}
-
-// // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (p *tempPrinter) Fatal(msg interface{}, format ...interface{}) {
-	lvl := "FATAL"
-	p.build(msg, lvl, format)
-	p.printout(lvl)
+// 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
+func (*Logger) Fatal(msg interface{}, format ...interface{}) {
+	log(msg, "FATAL", format)
 	panic("Fatal error")
 }
 
 // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (p *tempPrinter) Error(msg interface{}, format ...interface{}) {
-	lvl := "ERROR"
-	p.build(msg, lvl, format)
-	p.printout(lvl)
+func (*Logger) Error(msg interface{}, format ...interface{}) {
+	log(msg, "ERROR", format)
 }
 
 // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (p *tempPrinter) Warn(msg interface{}, format ...interface{}) {
-	lvl := "WARN"
-	p.build(msg, lvl, format)
-	p.printout(lvl)
+func (*Logger) Warn(msg interface{}, format ...interface{}) {
+	log(msg, "WARN", format)
 }
 
 // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (p *tempPrinter) Info(msg interface{}, format ...interface{}) {
-	lvl := "INFO"
-	p.build(msg, lvl, format)
-	p.printout(lvl)
+func (*Logger) Info(msg interface{}, format ...interface{}) {
+	log(msg, "INFO", format)
 }
 
 // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (p *tempPrinter) Debug(msg interface{}, format ...interface{}) {
-	lvl := "DEBUG"
-	p.build(msg, lvl, format)
-	p.printout(lvl)
+func (*Logger) Debug(msg interface{}, format ...interface{}) {
+	log(msg, "DEBUG", format)
 }
 
-func (l *tempPrinter) AddOption(fields map[string]interface{}) Logger {
-	if l == nil || len(l.msg) == 0 {
-		l = newTempPrinter()
+func log(msg interface{}, logLevel string, variableStr []interface{}) {
+	output := map[string]interface{}{
+		"level":    logLevel,
+		"time":     time.Now(),
+		"cursor":   createCursor(),
+		"function": createFunctionName(),
 	}
-	for k, v := range fields {
-		l.msg[k] = v
+	defer fin(output)
+
+	// printf系の処理
+	typedMsg, ok := msg.(string)
+	if ok {
+		output["message"] = fmt.Sprintf(typedMsg, variableStr...)
+		return
 	}
 
-	return l
-}
-
-func (p *tempPrinter) build(msg interface{}, logLevel string, variableStr []interface{}) {
-	p.setMetaData(logLevel)
-	switch m := msg.(type) {
-	case string:
-		p.msg[MSG] = fmt.Sprintf(m, variableStr...)
-	case error:
-		p.msg[MSG] = fmt.Sprintf("%+v", m)
-	default:
-		p.msg[MSG] = m
+	// errorの出力
+	_, ok = msg.(error)
+	if ok {
+		output["message"] = fmt.Sprintf("%+v", msg)
+		return
 	}
-}
 
-func (p *tempPrinter) setMetaData(logLevel string) {
-	p.msg[LVL] = logLevel
-	p.msg[TIME] = time.Now()
-	p.msg[CUR] = createCursor()
-	p.msg[FUNC] = createFunctionName()
+	// jsonに変換できる場合の処理
+	output["message"] = msg
 }
-
-func (p *tempPrinter) printout(logLevel string) {
-	switch logLevel {
+func fin(msg map[string]interface{}) {
+	switch msg["level"] {
 	case "FATAL", "ERROR", "WARN":
-		fmt.Fprintln(os.Stderr, p)
+		fmt.Fprintln(os.Stderr, jsonParse(msg))
 	case "INFO", "DEBUG":
-		fmt.Fprintln(os.Stdout, p)
+		fmt.Fprintln(os.Stdout, jsonParse(msg))
 	}
-}
-
-func (p *tempPrinter) String() string {
-	if p == nil || len(p.msg) == 0 {
-		return "[FATAL?] logger is nil ?"
-	}
-	result, err := json.Marshal(p.msg)
-	if err != nil {
-		return fmt.Sprintf("[FATAL?] log parse error raw message: %+v", p.msg[MSG])
-	}
-	return string(result)
 }

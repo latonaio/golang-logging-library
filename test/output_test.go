@@ -111,20 +111,3 @@ func Test_StructPointer(t *testing.T) {
 
 	l.Debug(jstr)
 }
-
-func Test_Option(t *testing.T) {
-	l := logger.NewLogger()
-	jstr := &struct {
-		K1 int
-		K2 string
-		K3 string
-		K4 interface{}
-		K5 interface{}
-	}{
-		K1: 1,
-		K2: "test",
-		K5: nil,
-	}
-
-	l.AddOption(map[string]interface{}{"test": 78}).Debug(jstr)
-}
