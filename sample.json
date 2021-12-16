@@ -1,22 +1,156 @@
-[
-    {
-        "cursor":"/Users/xxx/test/test.go#L39",
-        "level":"DEBUG",
-        "message":"debug",
-        "params":["nested","world"],
-        "time":"2021-11-05T18:33:49.496445+09:00"},
-    {
-        "cursor":"/Users/xxx/test/test.go#L36",
-        "level":"DEBUG",
-        "message":"test 111",
-        "time":"2021-11-05T18:33:49.496388+09:00"},
+{
+	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-product-master-reads/SAP_API_Caller/caller.go#L93",
+	"function": "sap-api-integrations-product-master-reads/SAP_API_Caller.(*SAPAPICaller).Product",
+	"level": "INFO",
+	"message": {
+		"Material": "D20_EPDM_SMRT_S",
+		"Product_desc": "https://sandbox.api.sap.com/s4hanacloud/sap/opu/odata/sap/API_PRODUCT_SRV/A_Product('D20_EPDM_SMRT_S')/to_Description",
+		"BaseUnit": "PC",
+		"ValidityStartDate": "",
+		"ProductGroup": "L002",
+		"Division": "00",
+		"GrossWeight": "0.500",
+		"WeightUnit": "KG",
+		"SizeOrDimensionText": "",
+		"ProductStandardID": ""
+	},
+	"time": "2021-12-16T10:58:51.602821+09:00"
+}
 
-    {
-        "cursor":"/Users/xxx/test/test.go#L40",
-        "is":"world",
-        "level":"DEBUG",
-        "message":"hello",
-        "test":100,
-        "time":"2021-11-05T18:33:49.496519+09:00"
-    }
-]
+{
+	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-product-master-reads/SAP_API_Caller/caller.go#L123",
+	"function": "sap-api-integrations-product-master-reads/SAP_API_Caller.(*SAPAPICaller).Plant",
+	"level": "INFO",
+	"message": {
+		"Material": "D20_EPDM_SMRT_S",
+		"Plant": "1010",
+		"PurchasingGroup": "001",
+		"ProductionInvtryManagedLoc": "101E",
+		"AvailabilityCheckType": "SR",
+		"ProfitCenter": "YB111",
+		"GoodsReceiptDuration": "1",
+		"MRPType": "PD",
+		"MRPResponsible": "001",
+		"MinimumLotSizeQuantity": "0",
+		"MaximumLotSizeQuantity": "0",
+		"FixedLotSizeQuantity": "0",
+		"IsBatchManagementRequired": false,
+		"ProcurementType": "F",
+		"IsInternalBatchManaged": false,
+		"GoodsIssueUnit": "",
+		"MaterialFreightGroup": "",
+		"ProductLogisticsHandlingGroup": "",
+		"IsMarkedForDeletion": false
+	},
+	"time": "2021-12-16T10:58:51.9687+09:00"
+}
+
+{
+	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-product-master-reads/SAP_API_Caller/caller.go#L273",
+	"function": "sap-api-integrations-product-master-reads/SAP_API_Caller.(*SAPAPICaller).Accounting",
+	"level": "INFO",
+	"message": {
+		"Material": "21",
+		"ValuationArea": "DE10",
+		"ValuationClass": "",
+		"StandardPrice": "",
+		"PriceUnitQty": "",
+		"MovingAveragePrice": "",
+		"PriceLastChangeDate": "",
+		"PlannedPrice": "",
+		"IsMarkedForDeletion": false
+	},
+	"time": "2021-12-16T11:35:07.465892+09:00"
+}
+
+{
+	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-product-master-reads/SAP_API_Caller/caller.go#L153",
+	"function": "sap-api-integrations-product-master-reads/SAP_API_Caller.(*SAPAPICaller).MRPArea",
+	"level": "INFO",
+	"message": {
+		"Material": "D20_EPDM_SMRT_S",
+		"Plant": "1010",
+		"MRPArea": "KANBAN1010",
+		"MRPType": "ND",
+		"MRPResponsible": "",
+		"MRPGroup": "",
+		"ReorderThresholdQuantity": "0",
+		"PlanningTimeFence": "0",
+		"LotSizingProcedure": "",
+		"LotSizeRoundingQuantity": "0",
+		"MinimumLotSizeQuantity": "0",
+		"MaximumLotSizeQuantity": "0",
+		"MaximumStockQuantity": "0",
+		"ProcurementSubType": "",
+		"DfltStorageLocationExtProcmt": "",
+		"MRPPlanningCalendar": "",
+		"SafetyStockQuantity": "0",
+		"SafetyDuration": "0",
+		"FixedLotSizeQuantity": "0",
+		"PlannedDeliveryDurationInDays": "0",
+		"StorageLocation": "",
+		"IsMarkedForDeletion": false
+	},
+	"time": "2021-12-16T11:35:51.614779+09:00"
+}
+
+{
+	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-product-master-reads/SAP_API_Caller/caller.go#L183",
+	"function": "sap-api-integrations-product-master-reads/SAP_API_Caller.(*SAPAPICaller).Procurement",
+	"level": "INFO",
+	"message": {
+		"Material": "D20_EPDM_SMRT_S",
+		"Plant": "1010",
+		"IsAutoPurOrdCreationAllowed": false,
+		"IsSourceListRequired": false
+	},
+	"time": "2021-12-16T11:37:47.652184+09:00"
+}
+
+{
+	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-product-master-reads/SAP_API_Caller/caller.go#L333",
+	"function": "sap-api-integrations-product-master-reads/SAP_API_Caller.(*SAPAPICaller).ProductDesc",
+	"level": "INFO",
+	"message": {
+		"Material": "A001",
+		"Product_desc": "請求対象勘定"
+	},
+	"time": "2021-12-16T11:40:05.007596+09:00"
+}
+
+{
+	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-product-master-reads/SAP_API_Caller/caller.go#L303",
+	"function": "sap-api-integrations-product-master-reads/SAP_API_Caller.(*SAPAPICaller).SalesOrganization",
+	"level": "INFO",
+	"message": {
+		"Material": "21",
+		"ProductSalesOrg": "DE10",
+		"ProductDistributionChnl": "10",
+		"SupplyingPlant": "DE10",
+		"PriceSpecificationProductGroup": "",
+		"AccountDetnProductGroup": "X1",
+		"ItemCategoryGroup": "PSTE",
+		"SalesMeasureUnit": "",
+		"ProductHierarchy": "",
+		"IsMarkedForDeletion": false
+	},
+	"time": "2021-12-16T11:40:52.450236+09:00"
+}
+
+{
+	"cursor": "/Users/latona2/bitbucket/sap-api-integrations-product-master-reads/SAP_API_Caller/caller.go#L213",
+	"function": "sap-api-integrations-product-master-reads/SAP_API_Caller.(*SAPAPICaller).WorkScheduling",
+	"level": "INFO",
+	"message": {
+		"Material": "D20_EPDM_SMRT_S",
+		"Plant": "1010",
+		"ProductionInvtryManagedLoc": "101E",
+		"ProductProcessingTime": "0.00",
+		"ProductionSupervisor": "",
+		"ProductProductionQuantityUnit": "",
+		"ProdnOrderIsBatchRequired": "",
+		"MatlCompIsMarkedForBackflush": "",
+		"ProductionSchedulingProfile": ""
+	},
+	"time": "2021-12-16T11:42:39.343389+09:00"
+}
