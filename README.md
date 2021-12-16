@@ -18,7 +18,7 @@ golang-logging-library は Go ランタイム の マイクロサービス の �
 go getでインストールしてください。  
 
 ```sh
-go get github.com/latonaio/golang-logging-library/logger@v0.0.0 
+go get github.com/latonaio/golang-logging-library/logger@v1.0.4 
 ```
 
 【インストール方法②】  
@@ -30,13 +30,13 @@ module MODULE-NAME
 go 1.17
 
 require (
-	github.com/latonaio/golang-logging-library v1.0.0
+	github.com/latonaio/golang-logging-library v1.0.4
 )
 ```
 
 ```
 go mod download   #全てインストールする場合
-go mod download github.com/latonaio/golang-logging-library@v0.0.0   #一部のみインストールする場合
+go mod download github.com/latonaio/golang-logging-library@v1.0.4   #一部のみインストールする場合
 ```
 
 #### 各マイクロサービスのソース内に以下を配置してください。
