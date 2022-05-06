@@ -27,7 +27,7 @@ go get github.com/latonaio/golang-logging-library/logger@v1.0.4
 ```
 module MODULE-NAME
 
-go 1.17
+go 1.18
 
 require (
 	github.com/latonaio/golang-logging-library v1.0.4
