@@ -7,46 +7,59 @@ import (
 )
 
 type Logger struct {
-	Log map[string]interface{}
+	Log           map[string]interface{}
+	headerInfoMsg map[string]interface{}
 }
 
 func NewLogger() *Logger {
-
 	return &Logger{
 		Log: map[string]interface{}{},
 	}
 }
 
+func (l *Logger) AddHeaderInfo(msg map[string]interface{}) {
+	if l.headerInfoMsg == nil {
+		l.headerInfoMsg = make(map[string]interface{}, len(msg))
+	}
+	for k, v := range msg {
+		switch k {
+		case "level", "time", "cursor", "function", "message":
+			continue
+		}
+		l.headerInfoMsg[k] = v
+	}
+}
+
 // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (*Logger) Fatal(msg interface{}, format ...interface{}) {
-	log(msg, "FATAL", format)
+func (l *Logger) Fatal(msg interface{}, format ...interface{}) {
+	l.log(msg, "FATAL", format)
 	panic("Fatal error")
 }
 
 // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (*Logger) Error(msg interface{}, format ...interface{}) {
-	log(msg, "ERROR", format)
+func (l *Logger) Error(msg interface{}, format ...interface{}) {
+	l.log(msg, "ERROR", format)
 }
 
 // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (*Logger) Warn(msg interface{}, format ...interface{}) {
-	log(msg, "WARN", format)
+func (l *Logger) Warn(msg interface{}, format ...interface{}) {
+	l.log(msg, "WARN", format)
 }
 
 // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (*Logger) Info(msg interface{}, format ...interface{}) {
-	log(msg, "INFO", format)
+func (l *Logger) Info(msg interface{}, format ...interface{}) {
+	l.log(msg, "INFO", format)
 }
 
 // 文字列を引数に渡した場合は文字列を表示、JSONに対応したマップや構造体を引数に渡した場合はJSONを表示
-func (*Logger) Debug(msg interface{}, format ...interface{}) {
-	log(msg, "DEBUG", format)
+func (l *Logger) Debug(msg interface{}, format ...interface{}) {
+	l.log(msg, "DEBUG", format)
 }
 
-func log(msg interface{}, logLevel string, variableStr []interface{}) {
+func (l *Logger) log(msg interface{}, logLevel string, variableStr []interface{}) {
 	output := map[string]interface{}{
 		"level":    logLevel,
-		"time":     time.Now(),
+		"time":     time.Now().Format(time.RFC3339),
 		"cursor":   createCursor(),
 		"function": createFunctionName(),
 	}
@@ -56,6 +69,9 @@ func log(msg interface{}, logLevel string, variableStr []interface{}) {
 	typedMsg, ok := msg.(string)
 	if ok {
 		output["message"] = fmt.Sprintf(typedMsg, variableStr...)
+		if len(l.headerInfoMsg) > 0 {
+			output["information"] = l.headerInfoMsg
+		}
 		return
 	}
 
@@ -63,10 +79,17 @@ func log(msg interface{}, logLevel string, variableStr []interface{}) {
 	_, ok = msg.(error)
 	if ok {
 		output["message"] = fmt.Sprintf("%+v", msg)
+		if len(l.headerInfoMsg) > 0 {
+			output["information"] = l.headerInfoMsg
+		}
 		return
 	}
-
 	// jsonに変換できる場合の処理
+	if len(l.headerInfoMsg) > 0 {
+		for k, v := range l.headerInfoMsg {
+			output[k] = v
+		}
+	}
 	output["message"] = msg
 }
 func fin(msg map[string]interface{}) {
